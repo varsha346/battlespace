@@ -8,4 +8,5 @@ import CF_DuelProject.CF_DuelProject.model.User;
 public interface UserRepository extends MongoRepository<User, String> {
 
     Optional<User> findByEmail(String email);
+    Optional<User> findByCfHandleIgnoreCase(String cfHandle);
 } 

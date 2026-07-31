@@ -60,17 +60,17 @@ export default function Login() {
     <main className="auth-page">
       <section className="auth-shell">
         <aside className="auth-brand">
-          <p className="auth-mini">CF ARENA</p>
+          <p className="auth-mini">BATTLE SPACE</p>
           <h1>
-            Practice duels
+            Link your trainer card
             <br />
-            with real match pressure.
+            and challenge the gym.
           </h1>
-          <p className="auth-subtitle">Sign in to continue your competitive routine.</p>
+          <p className="auth-subtitle">Sign in to prepare your Pokémon partner for battle.</p>
         </aside>
 
         <article className="auth-card">
-          <h2>Welcome back</h2>
+          <h2>Trainer Sign In</h2>
           {justRegistered ? <p className="auth-note">Account created. Sign in to start dueling.</p> : null}
 
           <div className="auth-segment">
@@ -121,7 +121,7 @@ export default function Login() {
             </button>
 
             <p className="auth-note">
-              New to CF Arena? <Link to="/signup">Create your account</Link>
+              New trainer? <Link to="/signup">Register Trainer Card</Link>
             </p>
           </form>
         </article>

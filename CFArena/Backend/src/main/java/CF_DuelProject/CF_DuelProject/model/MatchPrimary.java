@@ -30,6 +30,7 @@ public class MatchPrimary {
     private Date endTime;
     @Indexed(unique = true)
     private String inviteCode;
+    private int league;
     private Map<Integer, String> player1Results = new HashMap<>();
     private Map<Integer, String> player2Results = new HashMap<>();
 

@@ -16,46 +16,48 @@ function decodeToken(token) {
 }
 
 const navCss = `
-  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&family=Press+Start+2P&display=swap');
 
-  .nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 36px; border-bottom: 1px solid #222; background: #0a0a0a; position: sticky; top: 0; z-index: 50; }
-  .nav-brand { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 17px; letter-spacing: 0.1em; color: #e8e8e0; text-decoration: none; }
-  .nav-brand em { color: #c8ff00; font-style: normal; }
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 36px; border-bottom: 3px solid #2d3748; background: #171923; position: sticky; top: 0; z-index: 50; }
+  .nav-brand { font-family: 'Press Start 2P', cursive; font-size: 11px; color: #fff; text-decoration: none; text-shadow: 1.5px 1.5px 0px #3b4cca; }
+  .nav-brand em { color: #ffcb05; font-style: normal; text-shadow: none; }
 
-  .nav-right { display: flex; align-items: center; gap: 8px; }
-  .nav-user-pill { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: #999; border: 1px solid #2a2a2a; padding: 5px 12px; border-radius: 2px; }
+  .nav-right { display: flex; align-items: center; gap: 10px; }
+  .nav-user-pill { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; font-weight: 700; color: #a0aec0; border: 2px solid #2d3748; padding: 6px 14px; border-radius: 6px; background: #1f2330; }
 
-  .nav-btn { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: #999; background: none; border: 1px solid #2a2a2a; padding: 5px 12px; border-radius: 2px; cursor: crosshair; transition: all .2s ease; }
-  .nav-btn:hover { color: #e8e8e0; border-color: #666; }
-  .nav-btn.accent { color: #c8ff00; border-color: #c8ff0044; }
-  .nav-btn.accent:hover { background: #c8ff0011; border-color: #c8ff00; }
+  .nav-btn { font-family: 'Press Start 2P', cursive; font-size: 8px; color: #a0aec0; background: #1f2330; border: 2px solid #2d3748; padding: 8px 14px; border-radius: 6px; cursor: pointer; transition: all .15s ease; text-transform: uppercase; }
+  .nav-btn:hover { color: #fff; border-color: #718096; }
+  .nav-btn.accent { color: #ffcb05; border-color: #ffcb05; }
+  .nav-btn.accent:hover { background: rgba(255, 203, 5, 0.08); border-color: #ffcb05; }
   
-  @keyframes historyPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(200, 255, 0, 0.4); } 50% { transform: scale(1.03); box-shadow: 0 0 8px 1px rgba(200, 255, 0, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(200, 255, 0, 0); } }
-  .nav-btn.history { color: #c8ff00; border-color: #c8ff00; background: #0a0a0a; animation: historyPulse 2.5s infinite; transition: all 0.3s; }
-  .nav-btn.history:hover { background: #c8ff00; color: #0a0a0a; animation: none; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(200, 255, 0, 0.2); }
+  @keyframes historyPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 60, 60, 0.3); } 50% { transform: scale(1.02); box-shadow: 0 0 8px 1px rgba(255, 60, 60, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 60, 60, 0); } }
+  .nav-btn.history { color: #ff3c3c; border-color: #ff3c3c; background: #171923; animation: historyPulse 2.5s infinite; transition: all 0.3s; }
+  .nav-btn.history:hover { background: #ff3c3c; color: #fff; animation: none; transform: translateY(-1px); }
 
   /* ── Edit CF Handle modal ── */
-  .nav-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.88); display: flex; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(4px); animation: navFadeIn .15s ease; }
+  .nav-overlay { position: fixed; inset: 0; background: rgba(15,16,19,0.92); display: flex; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(4px); animation: navFadeIn .15s ease; }
   @keyframes navFadeIn { from{opacity:0}to{opacity:1} }
-  .nav-modal { background: #0f0f0f; border: 1px solid #2a2a2a; padding: 36px; width: 100%; max-width: 400px; border-radius: 2px; animation: navSlideUp .2s ease; }
+  .nav-modal { background: #171923; border: 3px solid #2d3748; padding: 36px; width: 100%; max-width: 420px; border-radius: 12px; animation: navSlideUp .2s ease; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+  .nav-modal::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #ff3c3c 50%, #ffcb05 50%); border-radius: 12px 12px 0 0; }
   @keyframes navSlideUp { from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1} }
-  .nav-modal-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; letter-spacing: 0.04em; margin-bottom: 4px; text-transform: uppercase; color: #e8e8e0; }
-  .nav-modal-sub { font-size: 11px; color: #888; letter-spacing: 0.06em; margin-bottom: 28px; line-height: 1.7; font-family: 'Space Mono', monospace; }
-  .nav-modal-field { margin-bottom: 16px; }
-  .nav-modal-field label { display: block; font-family: 'Space Mono', monospace; font-size: 10px; color: #888; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
-  .nav-modal-field input { width: 100%; background: #0a0a0a; border: 1px solid #2a2a2a; color: #e8e8e0; font-family: 'Space Mono', monospace; font-size: 13px; padding: 10px 14px; border-radius: 2px; outline: none; transition: border-color .15s; }
-  .nav-modal-field input:focus { border-color: #c8ff00; }
-  .nav-modal-field input::placeholder { color: #444; }
-  .nav-modal-actions { display: flex; gap: 8px; margin-top: 24px; }
-  .nav-btn-cancel { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #888; background: none; border: 1px solid #2a2a2a; padding: 11px 20px; border-radius: 2px; cursor: crosshair; transition: color .15s, border-color .15s; flex: 1; }
-  .nav-btn-cancel:hover { color: #e8e8e0; border-color: #666; }
-  .nav-btn-save { font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #0a0a0a; background: #c8ff00; border: none; padding: 12px; border-radius: 2px; cursor: crosshair; transition: opacity .15s; flex: 2; }
-  .nav-btn-save:hover { opacity: 0.88; }
-  .nav-btn-save:disabled { opacity: 0.3; cursor: not-allowed; }
+  .nav-modal-title { font-family: 'Press Start 2P', cursive; font-size: 11px; margin-bottom: 12px; text-transform: uppercase; color: #ffcb05; }
+  .nav-modal-sub { font-size: 13px; color: #a0aec0; margin-bottom: 24px; line-height: 1.7; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 500; }
+  .nav-modal-field { margin-bottom: 18px; }
+  .nav-modal-field label { display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .nav-modal-field input { width: 100%; background: #1f2330; border: 2px solid #2d3748; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; padding: 12px 16px; border-radius: 8px; outline: none; transition: border-color .15s; }
+  .nav-modal-field input:focus { border-color: #ffcb05; }
+  .nav-modal-field input::placeholder { color: #4a5568; }
+  .nav-modal-actions { display: flex; gap: 10px; margin-top: 24px; }
+  .nav-btn-cancel { font-family: 'Press Start 2P', cursive; font-size: 8px; color: #a0aec0; background: #1f2330; border: 2px solid #2d3748; padding: 12px 20px; border-radius: 8px; cursor: pointer; transition: all .15s; flex: 1; text-transform: uppercase; }
+  .nav-btn-cancel:hover { color: #fff; border-color: #718096; }
+  .nav-btn-save { font-family: 'Press Start 2P', cursive; font-size: 8px; color: #0f1013; background: #ffcb05; border: none; padding: 12px; border-radius: 8px; cursor: pointer; transition: all .15s; flex: 2; text-transform: uppercase; box-shadow: 0 3px 0 #c59b00; }
+  .nav-btn-save:hover:not(:disabled) { background: #ffe066; transform: translateY(1px); box-shadow: 0 2px 0 #c59b00; }
+  .nav-btn-save:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
+  .nav-btn-save:disabled { opacity: 0.4; cursor: not-allowed; }
 
   /* ── Toast ── */
-  .nav-toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.06em; padding: 10px 20px; border-radius: 2px; border-left: 2px solid #c8ff00; background: #0f120a; color: #c8ff00; white-space: nowrap; z-index: 200; animation: navToastIn .2s ease; }
-  .nav-toast.error { border-color: #ff4444; background: #120a0a; color: #ff6666; }
+  .nav-toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); font-family: 'Press Start 2P', cursive; font-size: 8px; padding: 12px 24px; border-radius: 8px; border-left: 4px solid #ffcb05; background: #171923; color: #ffcb05; white-space: nowrap; z-index: 200; box-shadow: 0 8px 16px rgba(0,0,0,0.3); border: 2px solid #2d3748; border-left: 4px solid #ffcb05; animation: navToastIn .2s ease; }
+  .nav-toast.error { border-left-color: #ff3c3c; color: #ff3c3c; }
   @keyframes navToastIn { from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)} }
 
   @media (max-width: 580px) {
@@ -112,7 +114,7 @@ export default function Navbar({ onCfSaved }) {
       <style>{navCss}</style>
 
       <header className="nav">
-        <Link to="/dashboard" className="nav-brand">CF<em>_</em>ARENA</Link>
+        <Link to="/dashboard" className="nav-brand">BATTLE<em>_</em>SPACE</Link>
         <div className="nav-right">
           <span className="nav-user-pill">{userEmail}</span>
           <button className="nav-btn history" onClick={() => navigate('/history')} title="View match history">

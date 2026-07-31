@@ -68,19 +68,19 @@ export default function Signup() {
     <main className="auth-page">
       <section className="auth-shell">
         <aside className="auth-brand">
-          <p className="auth-mini">CF ARENA</p>
+          <p className="auth-mini">BATTLE SPACE</p>
           <h1>
-            Build your duel identity
+            Register Trainer Card
             <br />
-            and enter the arena.
+            and challenge the gym.
           </h1>
           <p className="auth-subtitle">
-            Create your account, link your handle, and start challenging your Codeforces rivals.
+            Create your trainer profile, link your Codeforces handle, and get ready to evolve your league partner.
           </p>
         </aside>
 
         <article className="auth-card">
-          <h2>Create account</h2>
+          <h2>Register Trainer</h2>
 
           <div className="auth-segment">
             <Link to="/login" className="is-inactive">
@@ -156,7 +156,7 @@ export default function Signup() {
             </button>
 
             <p className="auth-note">
-              Already have an account? <Link to="/login">Sign in</Link>
+              Already registered? <Link to="/login">Sign in</Link>
             </p>
           </form>
         </article>

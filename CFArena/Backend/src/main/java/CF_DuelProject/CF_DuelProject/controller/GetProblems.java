@@ -18,6 +18,13 @@ public class GetProblems {
 
     @GetMapping("/{u1}/{u2}/{difficulty}")
     public List<String> getProblems(@PathVariable String u1, @PathVariable String u2, @PathVariable String difficulty) {
-        return problemService.getMatchProblems(u1, u2, difficulty);
+        int league = 1;
+        try {
+            league = Integer.parseInt(difficulty);
+        } catch (NumberFormatException e) {
+            if ("MEDIUM".equalsIgnoreCase(difficulty)) league = 3;
+            else if ("HARD".equalsIgnoreCase(difficulty)) league = 5;
+        }
+        return problemService.getMatchProblems(u1, u2, league);
     }
 }

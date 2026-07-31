@@ -46,6 +46,8 @@ public class UserController {
             response.put("email", user.getEmail());
             response.put("name", user.getName());
             response.put("cfHandle", user.getCfHandle());
+            response.put("league", user.getLeague());
+            response.put("badges", user.getBadges());
 
             return ResponseEntity.ok(response);
         }

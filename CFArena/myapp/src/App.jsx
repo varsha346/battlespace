@@ -29,8 +29,8 @@ const globalCSS = `
     overflow-x: hidden;
   }
 
-  a { cursor: crosshair; }
-  button { cursor: crosshair; }
+  a { cursor: pointer; }
+  button { cursor: pointer; }
 
   /* Ticker animation */
   @keyframes ticker {

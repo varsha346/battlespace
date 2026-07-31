@@ -34,7 +34,16 @@ public class MatchController {
         String email = authentication.getName();
         String cfHandle = userService.getCfHandleByEmail(email);
 
-        return matchService.createMatch(cfHandle, req.duration,req.difficulty);
+        return matchService.createMatch(cfHandle, req.duration, req.difficulty);
+    }
+
+    // 🎲 JOIN RANDOM MATCHMAKING
+    @PostMapping("/join-random")
+    public MatchSecondary joinRandom(Authentication authentication) {
+        String email = authentication.getName();
+        String cfHandle = userService.getCfHandleByEmail(email);
+
+        return matchService.joinRandomMatch(cfHandle);
     }
 
     // ✅ JOIN (auto READY)

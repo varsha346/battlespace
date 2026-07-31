@@ -20,4 +20,7 @@ public class User {
 
     private String cfHandle;
 
+    private int league = 1;
+    private int badges = 0;
+
 }

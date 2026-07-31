@@ -16,8 +16,10 @@ import com.mongodb.client.result.UpdateResult;
 import CF_DuelProject.CF_DuelProject.dto.SolveResult;
 import CF_DuelProject.CF_DuelProject.model.MatchPrimary;
 import CF_DuelProject.CF_DuelProject.model.MatchSecondary;
+import CF_DuelProject.CF_DuelProject.model.User;
 import CF_DuelProject.CF_DuelProject.repository.PrimaryMatchRepository;
 import CF_DuelProject.CF_DuelProject.repository.SecondaryMatchRepository;
+import CF_DuelProject.CF_DuelProject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.LinkedHashMap;
@@ -33,6 +35,7 @@ public class MatchService {
 
     private final PrimaryMatchRepository matchRepository;
     private final SecondaryMatchRepository matchRepository2;
+    private final UserRepository userRepository;
     private final MongoTemplate mongoTemplate;
     private final CodeforcesService codeforcesService;
     private final ProblemService problemService;
@@ -146,7 +149,7 @@ public class MatchService {
     }
 
     // @Transactional
-private void finishMatch(String matchId) {
+    private void finishMatch(String matchId) {
 
         MatchPrimary match = matchRepository.findById(matchId).orElse(null);
         if (match == null) return;
@@ -162,6 +165,22 @@ private void finishMatch(String matchId) {
             winner = match.getUser2();
         } else {
             winner = "DRAW";
+        }
+
+        // Award badge & level up
+        if (!"DRAW".equals(winner)) {
+            userRepository.findByCfHandleIgnoreCase(winner).ifPresent(user -> {
+                int newBadges = user.getBadges() + 1;
+                if (newBadges >= 5) {
+                    user.setLeague(user.getLeague() + 1);
+                    user.setBadges(0);
+                    System.out.println("🎉 Trainer " + winner + " leveled up to League " + user.getLeague());
+                } else {
+                    user.setBadges(newBadges);
+                    System.out.println("🎖 Trainer " + winner + " earned a badge (" + newBadges + "/5)");
+                }
+                userRepository.save(user);
+            });
         }
 
         // 🔥 CREATE SECONDARY ENTRY
@@ -183,8 +202,9 @@ private void finishMatch(String matchId) {
         newMatch.setEndTime(match.getEndTime());
 
         newMatch.setInviteCode(match.getInviteCode());
+        newMatch.setLeague(match.getLeague());
         newMatch.setPlayer1Results(match.getPlayer1Results());
-    newMatch.setPlayer2Results(match.getPlayer2Results());
+        newMatch.setPlayer2Results(match.getPlayer2Results());
         // save to secondary
         MatchSecondary saved = matchRepository2.save(newMatch);
 
@@ -207,7 +227,7 @@ private void finishMatch(String matchId) {
     }
 
     // ✅ Create Match
-    public MatchSecondary createMatch(String userId, int durationMinutes,String difficulty) {
+    public MatchSecondary createMatch(String userId, int durationMinutes, String difficulty) {
 
         MatchSecondary match = new MatchSecondary();
 
@@ -218,12 +238,14 @@ private void finishMatch(String matchId) {
 
         match.setStatus("WAITING");
         match.setInviteCode(generateCode());
-        match.setDifficulty(difficulty); 
+
+        // Get creator's league
+        User user = userRepository.findByCfHandleIgnoreCase(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        match.setLeague(user.getLeague());
+        match.setDifficulty("LEAGUE_" + user.getLeague());
 
         match.setStartTime(null);
-        match.setEndTime(null);
-
-        // store duration temporarily in endTime later
         match.setEndTime(new Date(durationMinutes * 60 * 1000)); // temp storage trick
 
         return matchRepository2.save(match);
@@ -231,80 +253,132 @@ private void finishMatch(String matchId) {
 
     public MatchSecondary joinMatch(String userId, String inviteCode) {
 
-    MatchSecondary match = matchRepository2.findByInviteCode(inviteCode)
-            .orElseThrow(() -> new RuntimeException("Invalid invite code"));
+        MatchSecondary match = matchRepository2.findByInviteCode(inviteCode)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid invite code"));
 
-    if (match.getUser2() != null) {
-        throw new RuntimeException("Match already full");
-    }
+        if (match.getUser2() != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Match already full");
+        }
 
-    if (match.getUser1().equals(userId)) {
-        throw new RuntimeException("Cannot join your own match");
-    }
+        if (match.getUser1().equalsIgnoreCase(userId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot join your own match");
+        }
 
-    match.setUser2(userId);
+        // Validate league membership
+        User joiner = userRepository.findByCfHandleIgnoreCase(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        if (joiner.getLeague() != match.getLeague()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+                "You can only join matches in League " + match.getLeague() + " (your league: " + joiner.getLeague() + ")");
+        }
 
-    // 🔥 IMPORTANT
-    match.setStatus("READY");
+        match.setUser2(userId);
 
-    MatchSecondary saved = matchRepository2.save(match);
-    // publishMatchUpdate(saved);
+        // 🔥 IMPORTANT
+        match.setStatus("READY");
 
-    return saved;
+        MatchSecondary saved = matchRepository2.save(match);
+        // publishMatchUpdate(saved);
+
+        return saved;
     }
 
 
     public MatchPrimary startMatch(String userId, String inviteCode) {
 
-    MatchSecondary secondary = matchRepository2.findByInviteCode(inviteCode)
-            .orElseThrow(() -> new RuntimeException("Invalid code"));
+        MatchSecondary secondary = matchRepository2.findByInviteCode(inviteCode)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid code"));
 
-    if (!userId.equals(secondary.getUser1())) {
-        throw new RuntimeException("Only creator can start");
+        if (!userId.equalsIgnoreCase(secondary.getUser1())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only creator can start");
+        }
+
+        if (!"READY".equals(secondary.getStatus())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Player 2 not joined/ready");
+        }
+
+        Date startTime = new Date();
+
+        long durationMillis = secondary.getEndTime().getTime();
+        Date endTime = new Date(startTime.getTime() + durationMillis);
+
+        MatchPrimary primary = new MatchPrimary();
+
+        primary.setUser1(secondary.getUser1());
+        primary.setUser2(secondary.getUser2());
+
+        // Transfer difficulty and league from lobby to live match
+        primary.setDifficulty(secondary.getDifficulty());
+        primary.setLeague(secondary.getLeague());
+
+        primary.setScore1(0);
+        primary.setScore2(0);
+        primary.setCurIdx(0);
+
+        primary.setStatus("ONGOING");
+        primary.setWinnerId(null);
+
+        primary.setStartTime(startTime);
+        primary.setEndTime(endTime);
+        primary.setInviteCode(secondary.getInviteCode());
+
+        // Pass saved difficulty directly to problem engine
+        List<String> problemUrls = problemService.getMatchProblems(
+                secondary.getUser1(),
+                secondary.getUser2(),
+                secondary.getLeague()
+        );
+        primary.setProblems(problemUrls);
+
+        MatchPrimary saved = matchRepository.save(primary);
+        matchRepository2.delete(secondary);
+        publishMatchUpdate(saved);
+
+        return saved;
     }
 
-    if (!"READY".equals(secondary.getStatus())) {
-        throw new RuntimeException("Player 2 not joined/ready");
+    public MatchSecondary joinRandomMatch(String userId) {
+        User user = userRepository.findByCfHandleIgnoreCase(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User profile not found"));
+        int userLeague = user.getLeague();
+
+        // Search for an open lobby (status WAITING) in the same league, created by someone else
+        Optional<MatchSecondary> openMatch = matchRepository2.findFirstByLeagueAndStatusAndUser1NotAndUser2IsNull(
+                userLeague, "WAITING", userId
+        );
+
+        if (openMatch.isPresent()) {
+            MatchSecondary match = openMatch.get();
+            match.setUser2(userId);
+            match.setStatus("READY");
+            MatchSecondary saved = matchRepository2.save(match);
+            
+            // Notify lobby update
+            publishMatchUpdateSecondary(saved);
+            
+            return saved;
+        } else {
+            // Create a new match in WAITING state for this league
+            MatchSecondary match = new MatchSecondary();
+            match.setUser1(userId);
+            match.setScore1(0);
+            match.setScore2(0);
+            match.setCurIdx(0);
+            match.setStatus("WAITING");
+            match.setInviteCode(generateCode());
+            match.setLeague(userLeague);
+            match.setDifficulty("LEAGUE_" + userLeague);
+            match.setStartTime(null);
+            match.setEndTime(new Date(30 * 60 * 1000)); // Default 30 minutes
+
+            return matchRepository2.save(match);
+        }
     }
 
-    Date startTime = new Date();
-
-    long durationMillis = secondary.getEndTime().getTime();
-    Date endTime = new Date(startTime.getTime() + durationMillis);
-
-    MatchPrimary primary = new MatchPrimary();
-
-    primary.setUser1(secondary.getUser1());
-    primary.setUser2(secondary.getUser2());
-
-    // Transfer difficulty from lobby to live match
-    primary.setDifficulty(secondary.getDifficulty());
-
-    primary.setScore1(0);
-    primary.setScore2(0);
-    primary.setCurIdx(0);
-
-    primary.setStatus("ONGOING");
-    primary.setWinnerId(null);
-
-    primary.setStartTime(startTime);
-    primary.setEndTime(endTime);
-    primary.setInviteCode(secondary.getInviteCode());
-
-    // Pass saved difficulty directly to problem engine
-    List<String> problemUrls = problemService.getMatchProblems(
-            secondary.getUser1(),
-            secondary.getUser2(),
-            secondary.getDifficulty()
-    );
-    primary.setProblems(problemUrls);
-
-    MatchPrimary saved = matchRepository.save(primary);
-    matchRepository2.delete(secondary);
-    publishMatchUpdate(saved);
-
-    return saved;
-}
+    private void publishMatchUpdateSecondary(MatchSecondary match) {
+        System.out.println("📡 WebSocket Lobby Update → /topic/match/" + match.getInviteCode());
+        messagingTemplate.convertAndSend("/topic/match/" + match.getInviteCode(), match);
+    }
     public Map<String, Object> getMatchStatus(String inviteCode) {
         String normalizedCode = inviteCode == null ? "" : inviteCode.trim();
 

@@ -18,59 +18,59 @@ function toResultsArray(val) {
 }
 
 const css = `
-  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Press+Start+2P&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:          #06060a;
-    --surface:     #0c0c10;
-    --panel:       #101014;
-    --panel2:      #141419;
-    --panel3:      #191920;
-    --border:      #22222c;
-    --border2:     #2e2e3a;
-    --border3:     #3a3a48;
-    --accent:      #c8ff00;
-    --accent-5:    rgba(200,255,0,0.04);
-    --accent-10:   rgba(200,255,0,0.09);
-    --accent-20:   rgba(200,255,0,0.2);
-    --accent-40:   rgba(200,255,0,0.4);
-    --accent-dim:  rgba(200,255,0,0.6);
-    --text:        #f0f0f6;
-    --text2:       #c0c0cc;
-    --muted:       #50505e;
-    --muted2:      #808090;
-    --danger:      #ff6b6b;
-    --danger-bg:   rgba(255,107,107,0.08);
+    --bg:          #0f1013;
+    --surface:     #171923;
+    --panel:       #1a1d27;
+    --panel2:      #222633;
+    --panel3:      #2b3040;
+    --border:      #2d3748;
+    --border2:     #4a5568;
+    --border3:     #718096;
+    --accent:      #ffcb05;
+    --accent-5:    rgba(255, 203, 5, 0.04);
+    --accent-10:   rgba(255, 203, 5, 0.09);
+    --accent-20:   rgba(255, 203, 5, 0.2);
+    --accent-40:   rgba(255, 203, 5, 0.4);
+    --accent-dim:  rgba(255, 203, 5, 0.6);
+    --text:        #f7fafc;
+    --text2:       #e2e8f0;
+    --muted:       #4a5568;
+    --muted2:      #718096;
+    --danger:      #ff3c3c;
+    --danger-bg:   rgba(255, 60, 60, 0.08);
     --warn:        #ffaa44;
     --warn-bg:     rgba(255,170,68,0.07);
     --warn-border: rgba(255,170,68,0.24);
     --success:     #44ffaa;
     --mono:        'IBM Plex Mono', monospace;
-    --radius:      6px;
-    --radius-lg:   10px;
-    --glow-sm:     0 0 12px rgba(200,255,0,0.18);
-    --glow-md:     0 0 24px rgba(200,255,0,0.25);
-    --glow-lg:     0 0 48px rgba(200,255,0,0.18), 0 0 96px rgba(200,255,0,0.08);
+    --radius:      8px;
+    --radius-lg:   12px;
+    --glow-sm:     0 0 12px rgba(255, 203, 5, 0.18);
+    --glow-md:     0 0 24px rgba(255, 203, 5, 0.25);
+    --glow-lg:     0 0 48px rgba(255, 203, 5, 0.18), 0 0 96px rgba(255, 203, 5, 0.08);
   }
 
   .mr { min-height:100vh; background:var(--bg); color:var(--text); font-family:var(--mono); display:flex; flex-direction:column; -webkit-font-smoothing:antialiased; }
   .mr-main { flex:1; padding:36px 40px 80px; max-width:1200px; margin:0 auto; width:100%; }
-  .mr::before { content:''; position:fixed; inset:0; z-index:0; pointer-events:none; background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(200,255,0,0.008) 3px,rgba(200,255,0,0.008) 4px); }
+  .mr::before { content:''; position:fixed; inset:0; z-index:0; pointer-events:none; background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255, 203, 5, 0.005) 3px,rgba(255, 203, 5, 0.005) 4px); }
   .mr-main { position:relative; z-index:1; }
 
   /* ── Loading screen ── */
   .mr-loading { position:fixed; inset:0; z-index:200; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; }
-  .mr-loading::after { content:''; position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse 60% 50% at 50% 50%, rgba(200,255,0,0.04) 0%, transparent 70%); }
+  .mr-loading::after { content:''; position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255, 203, 5, 0.04) 0%, transparent 70%); }
   .mr-loading-inner { position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; width:100%; max-width:460px; padding:0 24px; }
   .mr-loading-eyebrow { font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--muted2); margin-bottom:32px; display:flex; align-items:center; gap:12px; }
   .mr-loading-eyebrow::before,.mr-loading-eyebrow::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, transparent, var(--border2)); width:50px; }
-  .mr-loading-title { font-size:clamp(48px,9vw,72px); font-weight:700; letter-spacing:-0.03em; line-height:0.95; color:var(--text); text-align:center; margin-bottom:8px; }
-  .mr-loading-title span { color:var(--accent); display:inline-block; animation:mrFlicker 3.5s ease-in-out infinite; text-shadow:var(--glow-md); }
+  .mr-loading-title { font-family: 'Press Start 2P', cursive; font-size:20px; font-weight:400; line-height:1.6; color:var(--text); text-align:center; margin-bottom:12px; }
+  .mr-loading-title span { color:var(--accent); display:inline-block; animation:mrFlicker 3.5s ease-in-out infinite; text-shadow:2px 2px 0px #3b4cca; }
   @keyframes mrFlicker { 0%,100%{opacity:1} 46%{opacity:1} 50%{opacity:0.3} 54%{opacity:1} 91%{opacity:1} 93%{opacity:0.5} 95%{opacity:1} }
   .mr-loading-sub { font-size:11px; color:var(--muted2); letter-spacing:0.12em; text-align:center; margin-bottom:52px; }
-  .mr-loading-bar-wrap { width:100%; height:1px; background:var(--border2); margin-bottom:24px; position:relative; overflow:hidden; }
+  .mr-loading-bar-wrap { width:100%; height:2px; background:var(--border2); margin-bottom:24px; position:relative; overflow:hidden; }
   .mr-loading-bar { position:absolute; top:0; left:-60%; width:60%; height:100%; background:linear-gradient(90deg,transparent,var(--accent),var(--accent-dim),transparent); animation:mrSlide 1.5s ease-in-out infinite; }
   @keyframes mrSlide { 0%{left:-60%} 100%{left:110%} }
   .mr-loading-steps { width:100%; display:flex; flex-direction:column; gap:12px; }
@@ -87,8 +87,8 @@ const css = `
   .mr-topbar { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:28px; gap:16px; }
   .mr-tag { font-size:9px; color:var(--muted2); letter-spacing:0.28em; text-transform:uppercase; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
   .mr-tag::before { content:''; width:16px; height:1px; background:var(--accent); opacity:0.5; }
-  .mr-title { font-size:26px; font-weight:700; letter-spacing:-0.02em; }
-  .mr-title em { color:var(--accent); font-style:normal; text-shadow:var(--glow-sm); }
+  .mr-title { font-family: 'Press Start 2P', cursive; font-size:18px; font-weight:400; color: #fff; text-shadow: 2px 2px 0px #3b4cca; }
+  .mr-title em { color:var(--accent); font-style:normal; text-shadow:none; }
 
   /* ── Timer ── */
   .mr-timer-block { text-align:right; }
@@ -102,7 +102,7 @@ const css = `
   .mr-status::before { content:''; position:absolute; left:0; top:0; bottom:0; width:2px; background:var(--accent); opacity:0; transition:opacity 0.3s; }
   .mr-status.live::before { opacity:1; box-shadow:var(--glow-sm); }
   .mr-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
-  .mr-dot.live    { background:var(--accent); box-shadow:0 0 8px rgba(200,255,0,0.6); animation:mrPulse 2s infinite; }
+  .mr-dot.live    { background:var(--success); box-shadow:0 0 8px var(--success); animation:mrPulse 2s infinite; }
   .mr-dot.waiting { background:var(--warn); animation:mrPulse 2.5s infinite; }
   .mr-dot.done    { background:var(--muted); }
   @keyframes mrPulse { 0%,100%{opacity:1} 50%{opacity:0.2} }
@@ -111,35 +111,38 @@ const css = `
   .mr-err { background:var(--danger-bg); border:1px solid rgba(255,107,107,0.2); border-left:2px solid var(--danger); padding:14px 18px; border-radius:var(--radius); margin-bottom:18px; font-size:12px; color:#ffaaaa; }
 
   /* ── Lobby ── */
-  .mr-lobby { background:var(--panel); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; margin-bottom:20px; }
-  .mr-lobby-head { padding:32px 32px 26px; border-bottom:1px solid var(--border); position:relative; overflow:hidden; }
+  .mr-lobby { background:var(--panel); border:3px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; margin-bottom:20px; box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
+  .mr-lobby-head { padding:32px 32px 26px; border-bottom:3px solid var(--border); position:relative; overflow:hidden; }
   .mr-lobby-head::after { content:''; position:absolute; top:-40px; right:-40px; width:200px; height:200px; border-radius:50%; background:radial-gradient(circle, var(--accent-5) 0%, transparent 70%); pointer-events:none; }
-  .mr-lobby-title { font-size:30px; font-weight:700; letter-spacing:-0.02em; margin-bottom:6px; }
-  .mr-lobby-sub { font-size:11px; color:var(--muted2); letter-spacing:0.1em; }
+  .mr-lobby-title { font-family: 'Press Start 2P', cursive; font-size:12px; font-weight:400; color: #ffcb05; margin-bottom:8px; }
+  .mr-lobby-sub { font-size:12px; color:var(--muted2); letter-spacing:0.1em; }
   .mr-players { display:grid; grid-template-columns:1fr 1fr; }
-  .mr-player { padding:26px 32px; border-right:1px solid var(--border); position:relative; }
+  .mr-player { padding:26px 32px; border-right:3px solid var(--border); position:relative; }
   .mr-player:last-child { border-right:none; }
-  .mr-player-lbl { font-size:9px; color:var(--muted); letter-spacing:0.24em; text-transform:uppercase; margin-bottom:14px; }
-  .mr-player-name { font-size:20px; font-weight:600; margin-bottom:12px; letter-spacing:-0.01em; }
+  .mr-player-lbl { font-size:9px; color:var(--muted2); letter-spacing:0.24em; text-transform:uppercase; margin-bottom:14px; font-weight:700; }
+  .mr-player-name { font-size:20px; font-weight:800; margin-bottom:12px; letter-spacing:-0.01em; color: #fff; }
   .mr-player-name.empty { color:var(--border3); }
   .mr-badges { display:flex; gap:6px; flex-wrap:wrap; }
-  .mr-badge { font-size:9px; letter-spacing:0.16em; text-transform:uppercase; padding:4px 10px; border-radius:2px; border:1px solid; }
-  .mr-badge.host   { color:var(--accent); border-color:var(--accent-20); background:var(--accent-10); }
-  .mr-badge.you    { color:var(--muted2); border-color:var(--border2); }
-  .mr-badge.ready  { color:var(--accent); border-color:var(--accent-20); background:var(--accent-10); }
+  .mr-badge { font-size:9px; letter-spacing:0.16em; text-transform:uppercase; padding:4px 10px; border-radius:4px; border:1px solid; font-weight:700; }
+  .mr-badge.host   { color:var(--accent); border-color:var(--accent-40); background:var(--accent-10); }
+  .mr-badge.you    { color:var(--text2); border-color:var(--border2); background: rgba(255,255,255,0.05); }
+  .mr-badge.ready  { color:var(--success); border-color:rgba(68,255,170,0.3); background:rgba(68,255,170,0.05); }
   .mr-badge.joined { color:var(--warn); border-color:var(--warn-border); background:var(--warn-bg); }
-  .mr-code-row { display:flex; align-items:stretch; border-top:1px solid var(--border); }
-  .mr-code-lbl-block { padding:16px 26px; border-right:1px solid var(--border); display:flex; align-items:center; background:var(--surface); }
-  .mr-code-lbl { font-size:9px; color:var(--muted); letter-spacing:0.24em; text-transform:uppercase; }
-  .mr-code-val { flex:1; padding:16px 26px; font-size:24px; font-weight:700; letter-spacing:0.22em; color:var(--accent); display:flex; align-items:center; text-shadow:var(--glow-sm); }
-  .mr-copy-btn { padding:0 24px; background:none; border:none; border-left:1px solid var(--border); cursor:pointer; font-family:var(--mono); font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted2); transition:color .15s,background .15s; white-space:nowrap; }
-  .mr-copy-btn:hover { color:var(--text); background:var(--panel2); }
-  .mr-copy-btn.copied { color:var(--accent); }
-  .mr-lobby-foot { padding:22px 32px; border-top:1px solid var(--border); display:flex; align-items:center; gap:16px; background:var(--surface); }
+  .mr-code-row { display:flex; align-items:stretch; border-top:3px solid var(--border); }
+  .mr-code-lbl-block { padding:16px 26px; border-right:3px solid var(--border); display:flex; align-items:center; background:var(--surface); }
+  .mr-code-lbl { font-size:9px; color:var(--muted2); letter-spacing:0.24em; text-transform:uppercase; font-weight:700; }
+  .mr-code-val { flex:1; padding:16px 26px; font-family: 'Press Start 2P', cursive; font-size:18px; color:var(--accent); display:flex; align-items:center; text-shadow: 2px 2px 0px #3b4cca; }
+  .mr-copy-btn { padding:0 24px; background:none; border:none; border-left:3px solid var(--border); cursor:pointer; font-family: 'Press Start 2P', cursive; font-size:8px; color:var(--muted2); transition:color .15s,background .15s; white-space:nowrap; text-transform:uppercase; }
+  .mr-copy-btn:hover { color:#fff; background:var(--panel2); }
+  .mr-copy-btn.copied { color:var(--success); }
+  .mr-lobby-foot { padding:22px 32px; border-top:3px solid var(--border); display:flex; align-items:center; gap:16px; background:var(--surface); }
   .mr-hint { font-size:12px; color:var(--muted2); letter-spacing:0.04em; flex:1; line-height:1.9; }
-  .mr-hint em { color:var(--accent-dim); font-style:normal; }
+  .mr-hint em { color:var(--accent); font-style:normal; font-weight:600; }
 
-  .mr-btn-primary { font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#06060a; background:var(--accent); border:none; padding:14px 28px; border-radius:var(--radius); cursor:pointer; transition:opacity .15s,transform .1s,box-shadow .15s; white-space:nowrap; flex-shrink:0; box-shadow:0 0 20px rgba(200,255,0,0.2); }
+  .mr-btn-primary { font-family: 'Press Start 2P', cursive; font-size:9px; color:#0f1013; background:var(--accent); border:none; padding:16px 28px; border-radius:8px; cursor:pointer; transition:all 0.15s ease; white-space:nowrap; flex-shrink:0; box-shadow: 0 4px 0 #c59b00; text-transform:uppercase; }
+  .mr-btn-primary:hover:not(:disabled) { background:#ffe066; transform:translateY(1px); box-shadow:0 3px 0 #c59b00; }
+  .mr-btn-primary:active:not(:disabled) { transform:translateY(4px); box-shadow:none; }
+  .mr-btn-primary:disabled { opacity:0.3; cursor:not-allowed; transform:none; box-shadow:none; }box-shadow:0 0 20px rgba(200,255,0,0.2); }
   .mr-btn-primary:hover { opacity:0.9; transform:translateY(-2px); box-shadow:var(--glow-md); }
   .mr-btn-primary:active { transform:translateY(0); box-shadow:none; }
   .mr-btn-primary:disabled { opacity:0.18; cursor:not-allowed; transform:none; box-shadow:none; }
@@ -416,7 +419,7 @@ function LoadingScreen() {
   return (
     <div className="mr-loading">
       <div className="mr-loading-inner">
-        <div className="mr-loading-eyebrow">CF Arena</div>
+        <div className="mr-loading-eyebrow">Battle Space</div>
         <div className="mr-loading-title">Match<br /><span>Starting.</span></div>
         <div className="mr-loading-sub">// fetching problems &amp; initializing room</div>
         <div className="mr-loading-bar-wrap"><div className="mr-loading-bar" /></div>
@@ -445,6 +448,45 @@ function UnlockBanner({ problemName }) {
     </div>
   )
 }
+
+const LEAGUE_THEMES = {
+  1: { name: 'Boulder League', pokemon: 'Geodude', color: '#a1a19f', spriteId: 74, badgeName: 'Boulder Badge' },
+  2: { name: 'Cascade League', pokemon: 'Starmie', color: '#6890f0', spriteId: 121, badgeName: 'Cascade Badge' },
+  3: { name: 'Thunder League', pokemon: 'Pikachu', color: '#f8d030', spriteId: 25, badgeName: 'Thunder Badge' },
+  4: { name: 'Rainbow League', pokemon: 'Vileplume', color: '#78c850', spriteId: 45, badgeName: 'Rainbow Badge' },
+  5: { name: 'Soul League', pokemon: 'Weezing', color: '#a040a0', spriteId: 110, badgeName: 'Soul Badge' },
+  6: { name: 'Marsh League', pokemon: 'Alakazam', color: '#f85888', spriteId: 65, badgeName: 'Marsh Badge' },
+  7: { name: 'Volcano League', pokemon: 'Magmar', color: '#f08030', spriteId: 126, badgeName: 'Volcano Badge' },
+  8: { name: 'Earth League', pokemon: 'Nidoking', color: '#e0c068', spriteId: 34, badgeName: 'Earth Badge' }
+};
+
+const getLeagueTheme = (lvl) => {
+  if (!lvl) lvl = 1;
+  const index = ((lvl - 1) % 8) + 1;
+  const base = LEAGUE_THEMES[index] || LEAGUE_THEMES[1];
+  const cycle = Math.floor((lvl - 1) / 8);
+  const suffix = cycle > 0 ? ` +${cycle}` : '';
+  
+  let pokemon = base.pokemon;
+  let spriteId = base.spriteId;
+  if (cycle === 1) {
+    const gen2 = [95, 181, 243, 248, 196, 212, 229, 248];
+    spriteId = gen2[index - 1];
+    pokemon = 'Champion ' + index;
+  } else if (cycle > 1) {
+    const legendaries = [150, 249, 250, 382, 383, 384, 483, 484];
+    spriteId = legendaries[(index - 1) % legendaries.length];
+    pokemon = 'Elite ' + index;
+  }
+  
+  return {
+    name: cycle > 0 ? `Elite League ${lvl}` : base.name,
+    pokemon: pokemon,
+    color: base.color,
+    badgeName: `${base.badgeName}${suffix}`,
+    spriteUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${spriteId}.png`
+  };
+};
 
 export default function MatchRoom() {
   const { inviteCode } = useParams()
@@ -866,7 +908,7 @@ export default function MatchRoom() {
         <main className="mr-main">
           <div className="mr-topbar">
             <div>
-              <div className="mr-tag">CF Arena · Match Room</div>
+              <div className="mr-tag">Battle Space · Match Room</div>
               <div className="mr-title">code_<em>{inviteCode}</em></div>
             </div>
             {isOngoing && (
@@ -893,32 +935,68 @@ export default function MatchRoom() {
                 <div className="mr-lobby-sub">// {match.duration || '?'}-minute match · {problems.length || '?'} problems</div>
               </div>
               <div className="mr-players">
-                <div className="mr-player">
-                  <div className="mr-player-lbl">Player 1 · Host</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '12px' }}>
-                    {renderAvatar(match.user1, '60px')}
-                    <div>
-                      <div className="mr-player-name" style={{ marginBottom: 0 }}>{match.user1 || '—'}</div>
-                      <div className="mr-badges" style={{ marginTop: '8px' }}>
-                        {match.user1 && <span className="mr-badge host">host</span>}
-                        {isHost && <span className="mr-badge you">you</span>}
+                {(() => {
+                  const lobbyTheme = getLeagueTheme(match.league || 1);
+                  return (
+                    <>
+                      <div className="mr-player" style={{ borderLeft: `4px solid ${lobbyTheme.color}` }}>
+                        <div className="mr-player-lbl">Trainer 1 · Host</div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '12px' }}>
+                          <div style={{ position: 'relative' }}>
+                            {renderAvatar(match.user1, '60px')}
+                            {match.user1 && (
+                              <img 
+                                src={lobbyTheme.spriteUrl} 
+                                alt={lobbyTheme.pokemon} 
+                                style={{ position: 'absolute', bottom: '-8px', right: '-8px', width: '36px', height: '36px', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }} 
+                              />
+                            )}
+                          </div>
+                          <div>
+                            <div className="mr-player-name" style={{ marginBottom: 0 }}>{match.user1 || '—'}</div>
+                            <div className="mr-badges" style={{ marginTop: '8px' }}>
+                              <span className="mr-badge host" style={{ color: lobbyTheme.color, borderColor: `${lobbyTheme.color}33`, background: `${lobbyTheme.color}11` }}>
+                                {lobbyTheme.name}
+                              </span>
+                              {isHost && <span className="mr-badge you">you</span>}
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="mr-player">
-                  <div className="mr-player-lbl">Player 2 · Guest</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '12px' }}>
-                    {renderAvatar(match.user2, '60px')}
-                    <div>
-                      <div className={`mr-player-name ${!guestJoined ? 'empty' : ''}`} style={{ marginBottom: 0 }}>{match.user2 || 'waiting…'}</div>
-                      <div className="mr-badges" style={{ marginTop: '8px' }}>
-                        {guestJoined && <span className={`mr-badge ${guestReady ? 'ready' : 'joined'}`}>{guestReady ? 'ready' : 'joined'}</span>}
-                        {isGuest && <span className="mr-badge you">you</span>}
+                      <div className="mr-player" style={{ borderLeft: `4px solid ${guestJoined ? lobbyTheme.color : '#2d3748'}` }}>
+                        <div className="mr-player-lbl">Trainer 2 · Guest</div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '12px' }}>
+                          <div style={{ position: 'relative' }}>
+                            {renderAvatar(match.user2, '60px')}
+                            {guestJoined && (
+                              <img 
+                                src={lobbyTheme.spriteUrl} 
+                                alt={lobbyTheme.pokemon} 
+                                style={{ position: 'absolute', bottom: '-8px', right: '-8px', width: '36px', height: '36px', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }} 
+                              />
+                            )}
+                          </div>
+                          <div>
+                            <div className={`mr-player-name ${!guestJoined ? 'empty' : ''}`} style={{ marginBottom: 0 }}>{match.user2 || 'waiting for rival…'}</div>
+                            <div className="mr-badges" style={{ marginTop: '8px' }}>
+                              {guestJoined && (
+                                <span className={`mr-badge ${guestReady ? 'ready' : 'joined'}`} style={guestReady ? { color: '#44ffaa', borderColor: 'rgba(68,255,170,0.2)', background: 'rgba(68,255,170,0.05)' } : {}}>
+                                  {guestReady ? 'ready' : 'joined'}
+                                </span>
+                              )}
+                              {guestJoined && (
+                                <span className="mr-badge" style={{ color: lobbyTheme.color, borderColor: `${lobbyTheme.color}33`, background: `${lobbyTheme.color}11` }}>
+                                  {lobbyTheme.name}
+                                </span>
+                              )}
+                              {isGuest && <span className="mr-badge you">you</span>}
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
+                    </>
+                  );
+                })()}
               </div>
               <div className="mr-code-row">
                 <div className="mr-code-lbl-block"><span className="mr-code-lbl">Invite Code</span></div>

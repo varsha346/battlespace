@@ -11,4 +11,5 @@ public interface SecondaryMatchRepository extends MongoRepository<MatchSecondary
     List<MatchSecondary> findByStatus(String status);
     Optional<MatchSecondary> findByInviteCode(String inviteCode);
     List<MatchSecondary>findByUser1OrUser2(String user1,String user2);
+    Optional<MatchSecondary> findFirstByLeagueAndStatusAndUser1NotAndUser2IsNull(int league, String status, String user1);
 }
