@@ -9,6 +9,7 @@ export const API_PATHS = {
   USER: {
     ME: '/user/me',  
     ADD_CF_HANDLE: '/user/add-cf',
+    SELECT_PARTNER: '/user/select-partner',
   },
   MATCH: {
     CREATE: '/api/match/create',

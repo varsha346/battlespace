@@ -174,6 +174,7 @@ public class MatchService {
                 if (newBadges >= 5) {
                     user.setLeague(user.getLeague() + 1);
                     user.setBadges(0);
+                    user.setPartner(null);
                     System.out.println("🎉 Trainer " + winner + " leveled up to League " + user.getLeague());
                 } else {
                     user.setBadges(newBadges);
@@ -401,6 +402,23 @@ public class MatchService {
             payload.put("endTime", m.getEndTime());
             payload.put("player1Results", m.getPlayer1Results());
             payload.put("player2Results", m.getPlayer2Results());
+            payload.put("league", m.getLeague());
+
+            String partner1 = null;
+            if (m.getUser1() != null) {
+                partner1 = userRepository.findByCfHandleIgnoreCase(m.getUser1())
+                        .map(User::getPartner)
+                        .orElse(null);
+            }
+            String partner2 = null;
+            if (m.getUser2() != null) {
+                partner2 = userRepository.findByCfHandleIgnoreCase(m.getUser2())
+                        .map(User::getPartner)
+                        .orElse(null);
+            }
+            payload.put("partner1", partner1);
+            payload.put("partner2", partner2);
+
             return payload;
         }
 
@@ -423,6 +441,22 @@ public class MatchService {
             payload.put("endTime", m.getEndTime());
             payload.put("player1Results", m.getPlayer1Results());
             payload.put("player2Results", m.getPlayer2Results());
+            payload.put("league", m.getLeague());
+
+            String partner1 = null;
+            if (m.getUser1() != null) {
+                partner1 = userRepository.findByCfHandleIgnoreCase(m.getUser1())
+                        .map(User::getPartner)
+                        .orElse(null);
+            }
+            String partner2 = null;
+            if (m.getUser2() != null) {
+                partner2 = userRepository.findByCfHandleIgnoreCase(m.getUser2())
+                        .map(User::getPartner)
+                        .orElse(null);
+            }
+            payload.put("partner1", partner1);
+            payload.put("partner2", partner2);
        
             return payload;
         }

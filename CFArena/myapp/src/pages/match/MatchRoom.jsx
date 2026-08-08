@@ -5,6 +5,7 @@ import { API_PATHS } from '../../utils/apiPaths'
 import { fetchCFAvatar } from '../../utils/cfApi'
 import Navbar from '../../components/Navbar'
 import { celebrateSolve } from './fireworks'
+import { getPokemonDetails } from '../../utils/pokemonThemes'
 
 const WS_BASE = import.meta.env.VITE_WS_URL || 'ws://localhost:8080'
 
@@ -937,17 +938,28 @@ export default function MatchRoom() {
               <div className="mr-players">
                 {(() => {
                   const lobbyTheme = getLeagueTheme(match.league || 1);
+                  const p1Details = getPokemonDetails(match.partner1);
+                  const p1Sprite = p1Details ? p1Details.spriteUrl : lobbyTheme.spriteUrl;
+                  const p1Name = p1Details ? p1Details.name : lobbyTheme.pokemon;
+                  const p1Color = p1Details ? p1Details.color : lobbyTheme.color;
+
+                  const p2Details = getPokemonDetails(match.partner2);
+                  const p2Sprite = p2Details ? p2Details.spriteUrl : lobbyTheme.spriteUrl;
+                  const p2Name = p2Details ? p2Details.name : lobbyTheme.pokemon;
+                  const p2Color = p2Details ? p2Details.color : lobbyTheme.color;
+
                   return (
                     <>
-                      <div className="mr-player" style={{ borderLeft: `4px solid ${lobbyTheme.color}` }}>
+                      <div className="mr-player" style={{ borderLeft: `4px solid ${p1Color}` }}>
                         <div className="mr-player-lbl">Trainer 1 · Host</div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '12px' }}>
                           <div style={{ position: 'relative' }}>
                             {renderAvatar(match.user1, '60px')}
                             {match.user1 && (
                               <img 
-                                src={lobbyTheme.spriteUrl} 
-                                alt={lobbyTheme.pokemon} 
+                                src={p1Sprite} 
+                                alt={p1Name} 
+                                title={`Partner: ${p1Name}`}
                                 style={{ position: 'absolute', bottom: '-8px', right: '-8px', width: '36px', height: '36px', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }} 
                               />
                             )}
@@ -958,20 +970,26 @@ export default function MatchRoom() {
                               <span className="mr-badge host" style={{ color: lobbyTheme.color, borderColor: `${lobbyTheme.color}33`, background: `${lobbyTheme.color}11` }}>
                                 {lobbyTheme.name}
                               </span>
+                              {match.partner1 && (
+                                <span className="mr-badge" style={{ color: '#ffcb05', borderColor: 'rgba(255, 203, 5, 0.2)', background: 'rgba(255, 203, 5, 0.05)' }}>
+                                  Companion: {p1Name}
+                                </span>
+                              )}
                               {isHost && <span className="mr-badge you">you</span>}
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div className="mr-player" style={{ borderLeft: `4px solid ${guestJoined ? lobbyTheme.color : '#2d3748'}` }}>
+                      <div className="mr-player" style={{ borderLeft: `4px solid ${guestJoined ? p2Color : '#2d3748'}` }}>
                         <div className="mr-player-lbl">Trainer 2 · Guest</div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '12px' }}>
                           <div style={{ position: 'relative' }}>
                             {renderAvatar(match.user2, '60px')}
                             {guestJoined && (
                               <img 
-                                src={lobbyTheme.spriteUrl} 
-                                alt={lobbyTheme.pokemon} 
+                                src={p2Sprite} 
+                                alt={p2Name} 
+                                title={`Partner: ${p2Name}`}
                                 style={{ position: 'absolute', bottom: '-8px', right: '-8px', width: '36px', height: '36px', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }} 
                               />
                             )}
@@ -987,6 +1005,11 @@ export default function MatchRoom() {
                               {guestJoined && (
                                 <span className="mr-badge" style={{ color: lobbyTheme.color, borderColor: `${lobbyTheme.color}33`, background: `${lobbyTheme.color}11` }}>
                                   {lobbyTheme.name}
+                                </span>
+                              )}
+                              {guestJoined && match.partner2 && (
+                                <span className="mr-badge" style={{ color: '#ffcb05', borderColor: 'rgba(255, 203, 5, 0.2)', background: 'rgba(255, 203, 5, 0.05)' }}>
+                                  Companion: {p2Name}
                                 </span>
                               )}
                               {isGuest && <span className="mr-badge you">you</span>}

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import axiosInstance from '../../utils/axiosInstance'
 import { API_PATHS } from '../../utils/apiPaths'
 import Navbar from '../../components/Navbar'
+import { getPokemonDetails } from '../../utils/pokemonThemes'
 
 const LEAGUE_THEMES = {
   1: { name: 'Boulder League', pokemon: 'Geodude', color: '#a1a19f', spriteId: 74, badgeName: 'Boulder Badge' },
@@ -271,10 +272,13 @@ function isSolved(resultsMap, index) {
   return val === 'SOLVED'
 }
 
-function PlayerCard({ handle, isYou, score, results, problems, isWin, isDraw, league }) {
+function PlayerCard({ handle, isYou, score, results, problems, isWin, isDraw, league, partner }) {
   const pillClass  = isWin ? 'win' : isDraw ? 'draw' : 'lose'
   const scoreClass = isWin ? 'win' : isDraw ? 'draw' : 'lose'
   const theme      = getLeagueTheme(league || 1)
+  const partnerDetails = getPokemonDetails(partner)
+  const spriteUrl = partnerDetails ? partnerDetails.spriteUrl : theme.spriteUrl
+  const pokemonName = partnerDetails ? partnerDetails.name : theme.pokemon
 
   return (
     <div className={`rs-pcard ${isWin ? 'win' : ''}`} style={{ '--theme-color': theme.color }}>
@@ -288,7 +292,7 @@ function PlayerCard({ handle, isYou, score, results, problems, isWin, isDraw, le
             {isYou && <div className="rs-you-tag">you</div>}
           </div>
           {handle && (
-            <img src={theme.spriteUrl} alt={theme.pokemon} style={{ width: '48px', height: '48px', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.4))' }} />
+            <img src={spriteUrl} alt={pokemonName} style={{ width: '48px', height: '48px', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.4))' }} />
           )}
         </div>
         <div className="rs-score-row">
@@ -473,6 +477,7 @@ export default function Results() {
                 isWin={p1Wins}
                 isDraw={isDraw}
                 league={match.league}
+                partner={match.partner1}
               />
 
               <div className="rs-vs-col">
@@ -489,6 +494,7 @@ export default function Results() {
                 isWin={p2Wins}
                 isDraw={isDraw}
                 league={match.league}
+                partner={match.partner2}
               />
             </div>
 

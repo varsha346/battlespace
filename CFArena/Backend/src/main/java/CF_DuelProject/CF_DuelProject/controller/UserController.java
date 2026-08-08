@@ -48,9 +48,38 @@ public class UserController {
             response.put("cfHandle", user.getCfHandle());
             response.put("league", user.getLeague());
             response.put("badges", user.getBadges());
+            response.put("partner", user.getPartner());
 
             return ResponseEntity.ok(response);
         }
+
+    @PostMapping("/select-partner")
+    public ResponseEntity<?> selectPartner(Authentication authentication,
+                                           @RequestBody Map<String, String> request) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        String email = (String) authentication.getPrincipal();
+        User user = userRepository.findByEmail(email).orElse(null);
+
+        if (user == null) {
+            return ResponseEntity.status(404).body("User not found");
+        }
+
+        String partner = request.get("partner");
+        if (partner == null || partner.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Partner name is required");
+        }
+
+        user.setPartner(partner.trim());
+        userRepository.save(user);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Partner selected successfully");
+        response.put("partner", user.getPartner());
+        return ResponseEntity.ok(response);
+    }
 
 
     @PostMapping("/add-cf")

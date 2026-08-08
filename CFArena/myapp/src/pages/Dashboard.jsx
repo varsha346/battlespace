@@ -4,6 +4,7 @@ import axiosInstance from '../utils/axiosInstance'
 import { API_PATHS } from '../utils/apiPaths'
 import { fetchCFAvatar } from '../utils/cfApi'
 import Navbar from '../components/Navbar'
+import { getStartersForLeague, getPokemonDetails } from '../utils/pokemonThemes'
 
 const LEAGUE_THEMES = {
   1: { name: 'Boulder League', pokemon: 'Geodude', color: '#a1a19f', spriteId: 74, badgeName: 'Boulder Badge' },
@@ -219,6 +220,153 @@ const css = `
     margin-top: 6px;
   }
 
+  /* Starter Selection Modal & Cards */
+  .starter-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 9, 12, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.25s ease;
+  }
+
+  .starter-modal {
+    background: #171923;
+    border: 3px solid #2d3748;
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 720px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(255, 203, 5, 0.15);
+    text-align: center;
+    animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .starter-title {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 16px;
+    color: #ffcb05;
+    text-shadow: 2px 2px 0px #3b4cca;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+
+  .starter-subtitle {
+    font-size: 14px;
+    color: #a0aec0;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  .starter-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .starter-card {
+    background: #0f1013;
+    border: 3px solid #2d3748;
+    border-radius: 16px;
+    padding: 24px 16px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .starter-card:hover {
+    transform: translateY(-8px) scale(1.03);
+    border-color: var(--starter-color, #ffcb05);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4), 0 0 16px rgba(var(--starter-color-rgb), 0.3);
+  }
+
+  .starter-card.selected {
+    border-color: #44ffaa;
+    background: rgba(68, 255, 170, 0.03);
+    box-shadow: 0 0 20px rgba(68, 255, 170, 0.2);
+  }
+
+  .starter-card.selected::before {
+    content: '✓';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 22px;
+    height: 22px;
+    background: #44ffaa;
+    color: #0f1013;
+    font-size: 12px;
+    font-weight: 800;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .starter-sprite {
+    width: 96px;
+    height: 96px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+    transition: transform 0.25s;
+  }
+
+  .starter-card:hover .starter-sprite {
+    transform: scale(1.15) rotate(3deg);
+  }
+
+  .starter-name {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    margin: 12px 0 8px;
+    letter-spacing: 0.02em;
+  }
+
+  .type-pill {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+    color: #0f1013;
+    background: var(--starter-color, #718096);
+  }
+
+  /* Pencil edit companion button */
+  .edit-partner-btn {
+    background: none;
+    border: none;
+    color: #ffcb05;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 6px;
+    transition: color 0.15s, transform 0.15s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .edit-partner-btn:hover {
+    color: #ffe066;
+    transform: scale(1.2) rotate(10deg);
+  }
+
+  @media (max-width: 600px) {
+    .starter-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+
   /* ── Action Cards Grid ── */
   .db-actions { 
     display: grid; 
@@ -365,6 +513,11 @@ export default function Dashboard() {
   const [badges, setBadges] = useState(0)
   const [userName, setUserName] = useState('')
   const [isQueuing, setIsQueuing] = useState(false)
+  const [partner, setPartner] = useState(null)
+  const [showStarterModal, setShowStarterModal] = useState(false)
+  const [selectedStarter, setSelectedStarter] = useState(null)
+  const [isSavingStarter, setIsSavingStarter] = useState(false)
+  const [isForceSelect, setIsForceSelect] = useState(false)
 
   const showToast = (text, type = 'ok') => {
     setToast({ text, type })
@@ -378,6 +531,16 @@ export default function Dashboard() {
           setUserName(res.data.name || '')
           setLeague(res.data.league || 1)
           setBadges(res.data.badges || 0)
+          setPartner(res.data.partner || null)
+          if (res.data.cfHandle) {
+            setCfHandle(res.data.cfHandle)
+          }
+
+          // If partner is not selected, force select overlay
+          if (!res.data.partner) {
+            setIsForceSelect(true)
+            setShowStarterModal(true)
+          }
         }
         if (!res.data?.cfHandle) {
           setModal('cf') 
@@ -388,6 +551,25 @@ export default function Dashboard() {
       })
       .catch(() => {})
   }, [])
+
+  const onSaveStarter = async () => {
+    if (!selectedStarter) {
+      showToast('Please pick a Pokémon starter!', 'error')
+      return
+    }
+    setIsSavingStarter(true)
+    try {
+      await axiosInstance.post(API_PATHS.USER.SELECT_PARTNER, { partner: selectedStarter })
+      showToast(`Selected ${selectedStarter} as your companion!`)
+      setPartner(selectedStarter)
+      setShowStarterModal(false)
+      setIsForceSelect(false)
+    } catch (err) {
+      showToast(err?.response?.data?.message || 'Failed to select starter.', 'error')
+    } finally {
+      setIsSavingStarter(false)
+    }
+  }
 
   const onSaveCfHandle = async () => {
     if (!cfHandle.trim()) { showToast('Enter your Codeforces handle.', 'error'); return }
@@ -453,6 +635,9 @@ export default function Dashboard() {
   }
 
   const theme = getLeagueTheme(league);
+  const partnerDetails = getPokemonDetails(partner);
+  const companionSprite = partnerDetails ? partnerDetails.spriteUrl : theme.spriteUrl;
+  const companionName = partnerDetails ? partnerDetails.name : theme.pokemon;
 
   const renderBadgeSlot = (index) => {
     const unlocked = index < badges;
@@ -504,10 +689,10 @@ export default function Dashboard() {
                   className="trainer-avatar" 
                 />
                 <img 
-                  src={theme.spriteUrl} 
-                  alt={theme.pokemon} 
+                  src={companionSprite} 
+                  alt={companionName} 
                   className="pokemon-sprite" 
-                  title={`Your League Partner: ${theme.pokemon}`}
+                  title={`Your League Partner: ${companionName}`}
                 />
               </div>
             </div>
@@ -520,8 +705,15 @@ export default function Dashboard() {
                 <span className="trainer-league-badge">
                   {theme.name}
                 </span>
-                <span className="trainer-league-badge" style={{ background: 'rgba(255, 203, 5, 0.1)', color: '#ffcb05', border: '1px solid rgba(255, 203, 5, 0.2)' }}>
-                  Partner: {theme.pokemon}
+                <span className="trainer-league-badge" style={{ background: 'rgba(255, 203, 5, 0.1)', color: '#ffcb05', border: '1px solid rgba(255, 203, 5, 0.2)', paddingRight: '8px' }}>
+                  Partner: {companionName}
+                  <button 
+                    className="edit-partner-btn" 
+                    onClick={() => { setSelectedStarter(companionName); setIsForceSelect(false); setShowStarterModal(true); }}
+                    title="Switch Companion"
+                  >
+                    ✎
+                  </button>
                 </span>
               </div>
 
@@ -616,6 +808,61 @@ export default function Dashboard() {
                 <button className="db-btn-cancel" onClick={() => setModal(null)}>Cancel</button>
                 <button className="db-cta" style={{ flex: 2 }} onClick={onJoinMatch} disabled={isJoining}>
                   {isJoining ? 'Joining…' : 'Enter Arena'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Starter Selection Modal ── */}
+        {showStarterModal && (
+          <div className="starter-overlay" onClick={() => !isForceSelect && setShowStarterModal(false)}>
+            <div className="starter-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="starter-title">Choose Your Starter Pokémon</div>
+              <div className="starter-subtitle">
+                Select your companion for {theme.name} to represent you in battle lobbies and history records!
+              </div>
+              <div className="starter-grid">
+                {getStartersForLeague(league).map((starter) => {
+                  const details = getPokemonDetails(starter.name);
+                  const isSelected = selectedStarter?.toLowerCase() === starter.name.toLowerCase();
+                  
+                  return (
+                    <div 
+                      key={starter.name} 
+                      className={`starter-card ${isSelected ? 'selected' : ''}`}
+                      style={{ 
+                        '--starter-color': starter.color,
+                        '--starter-color-rgb': starter.rgb
+                      }}
+                      onClick={() => setSelectedStarter(starter.name)}
+                    >
+                      <img 
+                        src={details?.spriteUrl} 
+                        alt={starter.name} 
+                        className="starter-sprite" 
+                      />
+                      <div className="starter-name">{starter.name} {starter.emoji}</div>
+                      <span className="type-pill" style={{ background: starter.color }}>
+                        {starter.type}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+                {!isForceSelect && (
+                  <button className="db-btn-cancel" style={{ maxWidth: '180px' }} onClick={() => setShowStarterModal(false)}>
+                    Cancel
+                  </button>
+                )}
+                <button 
+                  className="db-cta" 
+                  style={{ maxWidth: '240px' }}
+                  onClick={onSaveStarter}
+                  disabled={isSavingStarter || !selectedStarter}
+                >
+                  {isSavingStarter ? 'Saving...' : 'I Choose You!'}
                 </button>
               </div>
             </div>

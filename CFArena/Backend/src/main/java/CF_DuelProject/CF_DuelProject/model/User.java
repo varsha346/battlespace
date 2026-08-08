@@ -22,5 +22,6 @@ public class User {
 
     private int league = 1;
     private int badges = 0;
+    private String partner;
 
 }

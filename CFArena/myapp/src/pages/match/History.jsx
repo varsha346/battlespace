@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import axiosInstance from '../../utils/axiosInstance'
 import { API_PATHS } from '../../utils/apiPaths'
 import Navbar from '../../components/Navbar'
+import { getPokemonDetails } from '../../utils/pokemonThemes'
 
 const LEAGUE_THEMES = {
   1: { name: 'Boulder League', pokemon: 'Geodude', color: '#a1a19f', spriteId: 74, badgeName: 'Boulder Badge' },
@@ -93,6 +94,10 @@ export default function History() {
               const isWinner = match.winnerId === user?.cfHandle
               const isDraw = match.winnerId === 'DRAW'
               
+              const partnerDetails = getPokemonDetails(user?.partner)
+              const spriteUrl = partnerDetails ? partnerDetails.spriteUrl : theme.spriteUrl
+              const pokemonName = partnerDetails ? partnerDetails.name : theme.pokemon
+              
               return (
                 <div 
                   key={match.id} 
@@ -135,12 +140,12 @@ export default function History() {
 
                   <div style={{ textAlign: 'center', flexShrink: 0 }}>
                     <img 
-                      src={theme.spriteUrl} 
-                      alt={theme.pokemon} 
+                      src={spriteUrl} 
+                      alt={pokemonName} 
                       style={{ width: '56px', height: '56px', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} 
                     />
                     <div style={{ fontSize: '9px', color: '#718096', textTransform: 'uppercase', fontWeight: 'bold', marginTop: '4px' }}>
-                      {theme.pokemon}
+                      {pokemonName}
                     </div>
                   </div>
                 </div>
